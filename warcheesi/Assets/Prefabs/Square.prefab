@@ -107,7 +107,7 @@ GameObject:
   - component: {fileID: 7844115037972345612}
   - component: {fileID: 3278839253169193944}
   m_Layer: 0
-  m_Name: Square1
+  m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -214,6 +214,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f612be3b7d39b9043bae0e1b26f362a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NormalMaterial: {fileID: 2100000, guid: fc2b4d8d85bd0894db61841e65489a06, type: 2}
+  SafeMaterial: {fileID: 2100000, guid: 1fefdd5c65824cd488980070fa89a20c, type: 2}
   Mesh: {fileID: 0}
   TokenPositions:
   - {fileID: 2977209103321820373}

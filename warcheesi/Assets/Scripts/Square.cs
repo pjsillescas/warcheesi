@@ -5,6 +5,14 @@ using UnityEngine;
 public class Square : MonoBehaviour
 {
     [SerializeField]
+    private Material NormalMaterial;
+    [SerializeField]
+    private Material SafeMaterial;
+
+    [SerializeField]
+    private bool IsSafe;
+
+    [SerializeField]
     private MeshRenderer Mesh;
 
     [SerializeField]
@@ -13,10 +21,26 @@ public class Square : MonoBehaviour
     [SerializeField]
     private List<Square> NextSquares;
 
+    public void UpdateMaterial()
+	{
+        Mesh.material = (IsSafe) ? SafeMaterial : NormalMaterial;
+	}
+
+    public void UpdateMaterial(Color color)
+	{
+        Mesh.material.color = color;
+	}
+
+	private void Awake()
+	{
+        Mesh = GetComponentInChildren<MeshRenderer>();
+        UpdateMaterial();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
