@@ -14,14 +14,19 @@ public class Token : MonoBehaviour
 
     private MeshRenderer mesh;
     private Color color;
-    public int GetTeam() => Team;
+    private bool inPlay;
 
     // Start is called before the first frame update
     void Start()
     {
         mesh = GetComponentInChildren<MeshRenderer>();
         Deselect();
+        inPlay = false;
     }
+
+    public bool IsInPlay() => inPlay;
+    public int GetTeam() => Team;
+
 
     public void SetColor(Color color, int team)
 	{

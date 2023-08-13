@@ -9,6 +9,8 @@ public class PlayerTurnControlWidget : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI TeamText;
     [SerializeField]
+    private TextMeshProUGUI DiceText;
+    [SerializeField]
     private Button PassButton;
 
 	// Start is called before the first frame update
@@ -16,6 +18,7 @@ public class PlayerTurnControlWidget : MonoBehaviour
     {
         Debug.Log("subscribe to onturnchange");
         GameManager.Instance.OnTurnChange += OnTurnChange;
+        GameManager.Instance.OnDiceThrown += OnDiceThrown;
 
         PassButton.onClick.AddListener(PassButtonClick);
     }
@@ -25,10 +28,15 @@ public class PlayerTurnControlWidget : MonoBehaviour
         Debug.Log($"update team to {currentTeam}");
         TeamText.text = currentTeam.ToString();
 	}
+    private void OnDiceThrown(object sender, int diceValue)
+    {
+        Debug.Log($"new dice value {diceValue}");
+        DiceText.text = diceValue.ToString();
+    }
 
     private void PassButtonClick()
 	{
-        GameManager.Instance.ActivateNextTeam();
+        GameManager.Instance.GoToNextState();
 	}
 
     // Update is called once per frame

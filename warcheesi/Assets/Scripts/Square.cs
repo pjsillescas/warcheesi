@@ -8,6 +8,8 @@ public class Square : MonoBehaviour
     private Material NormalMaterial;
     [SerializeField]
     private Material SafeMaterial;
+    [SerializeField]
+    private Material ReachableMaterial;
 
     [SerializeField]
     private bool IsSafe;
@@ -20,6 +22,11 @@ public class Square : MonoBehaviour
 
     [SerializeField]
     private List<Square> NextSquares;
+
+    public void SetReachable()
+	{
+        Mesh.material = ReachableMaterial;
+	}
 
     public void UpdateMaterial()
 	{
