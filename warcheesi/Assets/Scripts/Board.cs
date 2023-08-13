@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public struct TeamRecord
 {
-	public readonly int Team;
-	public readonly Home Home;
+	public int Team;
+	public Home Home;
 }
 
 public class Board : MonoBehaviour
@@ -32,7 +33,7 @@ public class Board : MonoBehaviour
     public Home GetHome(int team)
 	{
         var record = Teams.Find(record => record.Team == team);
-
+        Debug.Log("home " + record.Home.name);
         return record.Home;
 	}
 

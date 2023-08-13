@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static UnityEngine.InputSystem.InputAction;
 
@@ -18,6 +19,7 @@ public class GameManager : MonoBehaviour
     private Token selectedToken;
     private TurnState currentState;
     private int currentDiceValue;
+    List<Square> reachableSquares;
 
     // Start is called before the first frame update
     void Start()
@@ -58,14 +60,44 @@ public class GameManager : MonoBehaviour
             if (hitInfo.collider.TryGetComponent(out Square square))
             {
                 Debug.Log($"square {square.name}" );
+                SelectSquare(square);
 			}
             else if (hitInfo.collider.GetComponentInParent<Token>() != null)
 			{
                 var token = hitInfo.collider.GetComponentInParent<Token>();
-                Debug.Log($"token {token.name}");
+                Debug.Log($"token {token.name} {token.GetTeam()}");
                 SelectToken(token);
 			}
+            else
+			{
+                DeselectCurrentToken();
+			}
 		}
+    }
+
+    private void SelectSquare(Square square)
+	{
+        if(square.IsReachable())
+		{
+            Debug.Log("move to reachable square " + square.name);
+            this.selectedToken.MoveTo(square);
+            DeselectCurrentToken();
+            GoToNextState();
+        }
+        else
+		{
+            Debug.Log("square not reachable " + square.name);
+            DeselectCurrentToken();
+		}
+    }
+
+    private void DeselectCurrentToken()
+	{
+        if (selectedToken != null)
+        {
+            reachableSquares?.ForEach(square => square.UpdateMaterial());
+            selectedToken.Deselect();
+        }
     }
 
     private void SelectToken(Token token)
@@ -73,10 +105,7 @@ public class GameManager : MonoBehaviour
         
         if (token.GetTeam() == CurrentTeam)
         {
-            if (selectedToken != null)
-            {
-                selectedToken.Deselect();
-            }
+            DeselectCurrentToken();
 
             selectedToken = token;
 
@@ -84,9 +113,27 @@ public class GameManager : MonoBehaviour
 
             if(currentState == TurnState.Move)
 			{
-                var squares = GetSquareDestinations(token, currentDiceValue);
+                reachableSquares = GetSquareDestinations(token, currentDiceValue);
+                Debug.Log("squares: " + reachableSquares.Count);
+                reachableSquares.ForEach(square => Debug.Log(square.name));
+                reachableSquares.ForEach(square => square.SetReachable());
 			}
         }
+	}
+
+    private void GetSquareDestinations(Square startSquare, int numSquares, ref List<Square> destinations)
+	{
+        if (numSquares > 0)
+		{
+            foreach(var square in startSquare.GetNextSquares())
+			{
+                GetSquareDestinations(square, numSquares - 1, ref destinations);
+			}
+		}
+        else
+		{
+            destinations.Add(startSquare);
+		}
 	}
 
     private List<Square> GetSquareDestinations(Token token, int diceValue)
@@ -95,13 +142,16 @@ public class GameManager : MonoBehaviour
 
         if(token.IsInPlay())
 		{
-            ;
+            var startSquare = token.GetSquare();
+            GetSquareDestinations(startSquare, diceValue, ref destinations);
 		}
         else
 		{
-            if(diceValue == 5)
+            //if(diceValue == 5)
 			{
-
+                var home = Board.Instance.GetHome(CurrentTeam);
+                var square = home.GetStartSquare();
+                destinations.Add(square);
 			}
 		}
 
@@ -142,6 +192,7 @@ public class GameManager : MonoBehaviour
                 currentDiceValue = Dice.Instance.ThrowDice();
                 Debug.Log($"throw dice game manager: {currentDiceValue}");
                 OnDiceThrown?.Invoke(this, currentDiceValue);
+                GoToNextState();
                 break;
 		}
 	}

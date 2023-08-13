@@ -36,6 +36,8 @@ public class Home : MonoBehaviour
         }
     }
 
+    public Square GetStartSquare() => GameStartSquare;
+
     // Start is called before the first frame update
     void Start()
     {

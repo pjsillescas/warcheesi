@@ -216,9 +216,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NormalMaterial: {fileID: 2100000, guid: fc2b4d8d85bd0894db61841e65489a06, type: 2}
   SafeMaterial: {fileID: 2100000, guid: 1fefdd5c65824cd488980070fa89a20c, type: 2}
+  ReachableMaterial: {fileID: 2100000, guid: 04793ffc9ab1efb4e99bced29e455878, type: 2}
+  IsSafe: 0
   Mesh: {fileID: 0}
   TokenPositions:
-  - {fileID: 2977209103321820373}
-  - {fileID: 48889066834301523}
-  - {fileID: 1329065020520515927}
+  - Transform: {fileID: 1329065020520515927}
+    Token: {fileID: 0}
+  - Transform: {fileID: 2977209103321820373}
+    Token: {fileID: 0}
+  - Transform: {fileID: 48889066834301523}
+    Token: {fileID: 0}
   NextSquares: []
