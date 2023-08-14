@@ -54,6 +54,12 @@ public class Square : MonoBehaviour
         Mesh.material.color = color;
 	}
 
+    public bool HasRoom()
+	{
+        return TokenPositions[1].Token != null || TokenPositions[0].Token == null && TokenPositions[2].Token == null;
+
+    }
+
     public Transform GetFreePosition(Token token)
 	{
         if(TokenPositions[0].Token == null && TokenPositions[1].Token == null && TokenPositions[2].Token == null)

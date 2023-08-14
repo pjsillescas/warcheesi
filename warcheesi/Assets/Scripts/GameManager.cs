@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
 
     private void SelectSquare(Square square)
 	{
-        if(square.IsReachable())
+        if(square.IsReachable() && square.HasRoom())
 		{
             Debug.Log("move to reachable square " + square.name);
             this.selectedToken.MoveTo(square);
