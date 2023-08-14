@@ -28,7 +28,6 @@ public class Home : MonoBehaviour
             foreach (var position in Positions)
             {
                 var tokenObj = Instantiate(TokenPrefab, position.position, Quaternion.identity);
-                //tokenObj.GetComponentInChildren<MeshRenderer>().material.color = Color;
                 var token = tokenObj.GetComponent<Token>();
                 token.SetColor(Color, team);
                 tokens.Add(token);

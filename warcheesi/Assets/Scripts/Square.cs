@@ -78,11 +78,20 @@ public class Square : MonoBehaviour
 		}
     }
 
-    public void FreeSpace(Token token)
-    {
-        for (int k = 0; k <= 2; k++)
+    private void RepositionToken(int indexFrom, int indexTo)
+	{
+        TokenPositions[indexFrom].Token.TeleportTo(TokenPositions[indexTo].Transform);
+        SetPositionToken(indexTo, TokenPositions[indexFrom].Token);
+
+        SetPositionToken(indexFrom, null);
+
+    }
+
+    private void FreeSpaces()
+	{
+        for (var k = 0; k < 3; k++)
         {
-            if (TokenPositions[k].Token == token)
+            if (TokenPositions[k].Token != null && !TokenPositions[k].Token.GetSquare().Equals(this))
             {
                 SetPositionToken(k, null);
             }
@@ -91,27 +100,15 @@ public class Square : MonoBehaviour
 
     public void Reorganize()
 	{
-        var x1 = (TokenPositions[0].Token != null) ? "X" : "-";
-        var x2 = (TokenPositions[1].Token != null) ? "X" : "-";
-        var x3 = (TokenPositions[2].Token != null) ? "X" : "-";
-        Debug.Log("reorganizing " + x1 + x2 + x3);
+        FreeSpaces();
         if (TokenPositions[0].Token != null && TokenPositions[1].Token == null && TokenPositions[2].Token == null)
 		{
-            TokenPositions[0].Token.TeleportTo(TokenPositions[1].Transform);
-            SetPositionToken(1, TokenPositions[0].Token);
-
-            TokenPositions[1].Token.SetSquare(this);
-            SetPositionToken(0, null);
+            RepositionToken(0,1);
         }
         else if (TokenPositions[0].Token == null && TokenPositions[1].Token == null && TokenPositions[2].Token != null)
         {
-            TokenPositions[2].Token.TeleportTo(TokenPositions[1].Transform);
-            SetPositionToken(1, TokenPositions[2].Token);
-
-            TokenPositions[1].Token.SetSquare(this);
-            SetPositionToken(2, null);
+            RepositionToken(2, 1);
         }
-
     }
 
     private void SetPositionToken(int index, Token token)

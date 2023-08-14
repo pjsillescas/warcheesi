@@ -43,26 +43,23 @@ public class Token : MonoBehaviour
         var targetTransform = square.GetFreePosition(this);
         if (targetTransform != null)
         {
-            Debug.Log("teleport");
             TeleportTo(targetTransform);
-            Debug.Log("setting square");
-            CurrentSquare?.Reorganize();
+            var previousSquare = CurrentSquare;
             SetSquare(square);
-            if(!inPlay)
+            previousSquare?.Reorganize();
+            if (!inPlay)
 			{
                 inPlay = true;
 			}
             success = true;
         }
 
-        Debug.Log("moveto " + (success ? "pozi" : "pono"));
-
         return success;
 	}
 
     public void SetSquare(Square square)
 	{
-        CurrentSquare?.FreeSpace(this);
+        Debug.Log($"token {name} in square {square.name}");
         CurrentSquare = square;
 	}
 
