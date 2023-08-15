@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Dice : MonoBehaviour
 {
+    public static int DICE_MAX_VALUE = 6;
     public static Dice Instance = null;
 
     // Start is called before the first frame update
@@ -26,6 +27,6 @@ public class Dice : MonoBehaviour
 
     public int ThrowDice()
 	{
-        return ThrowDice(6);
+        return ThrowDice(DICE_MAX_VALUE);
 	}
 }

@@ -31,6 +31,8 @@ public class Square : MonoBehaviour
     [SerializeField]
     private List<Square> NextSquares;
 
+    private Color color;
+    private bool useColor;
     private bool isReachable;
 
     public void SetReachable()
@@ -46,12 +48,20 @@ public class Square : MonoBehaviour
     public void UpdateMaterial()
 	{
         Mesh.material = (IsSafe) ? SafeMaterial : NormalMaterial;
+
+        if (useColor)
+        {
+            Mesh.material.color = color;
+        }
+        
         isReachable = false;
     }
 
     public void UpdateMaterial(Color color)
 	{
-        Mesh.material.color = color;
+        useColor = true;
+        this.color = color;
+        UpdateMaterial();
 	}
 
     public bool HasRoom()
@@ -60,7 +70,7 @@ public class Square : MonoBehaviour
 
     }
 
-    public Transform GetFreePosition(Token token)
+    public Transform OccupyFreePosition(Token token)
 	{
         if(TokenPositions[0].Token == null && TokenPositions[1].Token == null && TokenPositions[2].Token == null)
 		{
@@ -133,7 +143,8 @@ public class Square : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        useColor = false;
+        isReachable = false;
     }
 
     // Update is called once per frame

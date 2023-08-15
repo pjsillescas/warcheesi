@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using static UnityEngine.InputSystem.InputAction;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,11 +9,13 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance = null;
 
     [SerializeField]
+    List<Team> Teams;
+
+    [SerializeField]
     private int CurrentTeam;
     public event EventHandler<int> OnTurnChange;
     public event EventHandler<int> OnDiceThrown;
 
-    private InputActions inputActions;
     private Token selectedToken;
     private TurnState currentState;
     private int currentDiceValue;
@@ -33,10 +33,6 @@ public class GameManager : MonoBehaviour
         Instance = this;
 
         selectedToken = null;
-        inputActions = new InputActions();
-        inputActions.Enable();
-
-        inputActions.Player.Click.performed += OnPerformedClick;
         currentState = TurnState.ThrowDice;
 
         StartCoroutine(InitializeTeamCoroutine());
@@ -44,43 +40,22 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator InitializeTeamCoroutine()
 	{
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.3f);
 
         Debug.Log("readying team");
         CurrentTeam = UnityEngine.Random.Range(1, 5);
         OnTurnChange?.Invoke(this, CurrentTeam);
-        ProcessState(currentState);
+        ProcessState();
         yield return null;
     }
-    private void OnPerformedClick(CallbackContext obj)
-    {
-        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hitInfo))
-		{
-            if (hitInfo.collider.TryGetComponent(out Square square))
-            {
-                Debug.Log($"square {square.name}" );
-                SelectSquare(square);
-			}
-            else if (hitInfo.collider.GetComponentInParent<Token>() != null)
-			{
-                var token = hitInfo.collider.GetComponentInParent<Token>();
-                Debug.Log($"token {token.name} {token.GetTeam()}");
-                SelectToken(token);
-			}
-            else
-			{
-                DeselectCurrentToken();
-			}
-		}
-    }
 
-    private void SelectSquare(Square square)
+    public void SelectSquare(Square square)
 	{
         if(square.IsReachable() && square.HasRoom())
 		{
             Debug.Log("move to reachable square " + square.name);
             this.selectedToken.MoveTo(square);
+
             DeselectCurrentToken();
             GoToNextState();
         }
@@ -91,7 +66,7 @@ public class GameManager : MonoBehaviour
 		}
     }
 
-    private void DeselectCurrentToken()
+    public void DeselectCurrentToken()
 	{
         if (selectedToken != null)
         {
@@ -100,9 +75,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void SelectToken(Token token)
+    public void SelectToken(Token token)
 	{
-        
         if (token.GetTeam() == CurrentTeam)
         {
             DeselectCurrentToken();
@@ -178,12 +152,12 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        ProcessState(currentState);
+        ProcessState();
     }
 
-    private void ProcessState(TurnState state)
+    private void ProcessState()
 	{
-        switch(state)
+        switch(currentState)
 		{
             case TurnState.Move:
                 break;

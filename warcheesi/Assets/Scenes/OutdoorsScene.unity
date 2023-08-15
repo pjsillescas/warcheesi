@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 2160.4778, g: 2264.5627, b: 3287.5942, a: 1}
+  m_IndirectSpecularColor: {r: 2184.4534, g: 2358.7131, b: 3627.9849, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2214,6 +2214,7 @@ GameObject:
   m_Component:
   - component: {fileID: 724260281}
   - component: {fileID: 724260282}
+  - component: {fileID: 724260283}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2248,7 +2249,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 614a99d504b3777438a390ec5377ffb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Teams: []
   CurrentTeam: 0
+--- !u!114 &724260283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 724260280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b1172d4069280b48a044d3fd3f29c09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &727981574 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3869892610231400356, guid: c144414db1eb6804188cd38777afbe82,

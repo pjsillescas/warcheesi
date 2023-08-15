@@ -20,7 +20,7 @@ public class Team : MonoBehaviour
         home.Initialize(TeamNumber,Color);
 
         squares.ForEach(square => square.UpdateMaterial(Color));
-	}
+    }
 
     // Start is called before the first frame update
     void Start()
