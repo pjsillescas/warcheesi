@@ -136,20 +136,10 @@ public class Square : MonoBehaviour
 
     private void Awake()
 	{
-        Mesh = GetComponentInChildren<MeshRenderer>();
-        UpdateMaterial();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
         useColor = false;
         isReachable = false;
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Mesh = GetComponentInChildren<MeshRenderer>();
+        UpdateMaterial();
     }
 }
