@@ -57,6 +57,7 @@ public class GameManager : MonoBehaviour
             this.selectedToken.MoveTo(square);
 
             DeselectCurrentToken();
+            CheckForKill(square);
             GoToNextState();
         }
         else
@@ -65,6 +66,17 @@ public class GameManager : MonoBehaviour
             DeselectCurrentToken();
 		}
     }
+
+    private void CheckForKill(Square square)
+	{
+        var tokens = square.GetTokens();
+
+        if (tokens.Count > 1 && tokens[0].GetTeam() != tokens[1].GetTeam() && !square.IsSafeSquare())
+		{
+            Debug.Log("token killed");
+            tokens[0].MoveTo(Board.Instance.GetHome(tokens[0].GetTeam()));
+		}
+	}
 
     public void DeselectCurrentToken()
 	{

@@ -22,6 +22,8 @@ public class Team : MonoBehaviour
         squares.ForEach(square => square.UpdateMaterial(Color));
     }
 
+    public Home GetHome() => home;
+
     // Start is called before the first frame update
     void Start()
     {

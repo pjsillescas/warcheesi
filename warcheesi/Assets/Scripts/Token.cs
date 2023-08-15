@@ -57,9 +57,36 @@ public class Token : MonoBehaviour
         return success;
 	}
 
+    public bool MoveTo(Home home)
+    {
+        bool success = false;
+        var targetTransform = home.OccupyFreePosition();
+        if (targetTransform != null)
+        {
+            TeleportTo(targetTransform);
+            var previousSquare = CurrentSquare;
+            SetSquare(null);
+            previousSquare?.Reorganize();
+            if (!inPlay)
+            {
+                inPlay = true;
+            }
+            success = true;
+        }
+
+        return success;
+    }
+
     public void SetSquare(Square square)
 	{
-        Debug.Log($"token {name} in square {square.name}");
+        if (square != null)
+        {
+            Debug.Log($"token {name} in square {square.name}");
+        }
+        else
+		{
+            Debug.Log($"token {name} in square null");
+        }
         CurrentSquare = square;
 	}
 

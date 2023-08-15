@@ -70,6 +70,26 @@ public class Square : MonoBehaviour
 
     }
 
+    public bool IsSafeSquare()
+	{
+        return IsSafe;
+	}
+
+    public List<Token> GetTokens()
+	{
+        var tokens = new List<Token>();
+
+        for (var k = 0; k < 3; k++)
+        {
+            if (TokenPositions[k].Token != null)
+            {
+                tokens.Add(TokenPositions[k].Token);
+            }
+        }
+
+        return tokens;
+	}
+
     public Transform OccupyFreePosition(Token token)
 	{
         if(TokenPositions[0].Token == null && TokenPositions[1].Token == null && TokenPositions[2].Token == null)

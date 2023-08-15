@@ -14,6 +14,8 @@ public class Home : MonoBehaviour
     private Color Color;
     [SerializeField]
     private int Team;
+    [SerializeField]
+    private LayerMask TokenLayer;
 
     private List<Token> tokens;
 
@@ -35,6 +37,23 @@ public class Home : MonoBehaviour
         }
     }
 
+    private bool ThereIsToken(Transform transform)
+	{
+        return Physics.Raycast(transform.position, Vector3.up, TokenLayer);
+	}
+
+    public Transform OccupyFreePosition()
+    {
+        for(var k = 0; k < Positions.Count; k++)
+		{
+            if (!ThereIsToken(Positions[k]))
+            {
+                return Positions[k];
+            }
+        }
+
+        return null;
+    }
     public Square GetStartSquare() => GameStartSquare;
 
     // Start is called before the first frame update

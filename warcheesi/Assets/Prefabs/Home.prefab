@@ -161,7 +161,7 @@ Transform:
   - {fileID: 7092327923570009237}
   - {fileID: 849785037019774896}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5381830286848462362
 MeshFilter:
@@ -251,5 +251,11 @@ MonoBehaviour:
   - {fileID: 7135857502200555581}
   - {fileID: 7092327923570009237}
   - {fileID: 849785037019774896}
+  GameStartSquare: {fileID: 0}
   TokenPrefab: {fileID: 5391301717106864244, guid: f3991d2eb97ee5c4aabdfe6881667ae9,
     type: 3}
+  Color: {r: 0, g: 0, b: 0, a: 0}
+  Team: 0
+  TokenLayer:
+    serializedVersion: 2
+    m_Bits: 64
