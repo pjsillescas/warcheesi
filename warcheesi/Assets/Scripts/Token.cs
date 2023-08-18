@@ -40,7 +40,7 @@ public class Token : MonoBehaviour
     public bool MoveTo(Square square)
 	{
         bool success = false;
-        var targetTransform = square.OccupyFreePosition(this);
+        var targetTransform = square.GetFreePosition(this);
         if (targetTransform != null)
         {
             TeleportTo(targetTransform);
@@ -60,7 +60,7 @@ public class Token : MonoBehaviour
     public bool MoveTo(Home home)
     {
         bool success = false;
-        var targetTransform = home.OccupyFreePosition();
+        var targetTransform = home.GetFreePosition();
         if (targetTransform != null)
         {
             TeleportTo(targetTransform);

@@ -90,7 +90,7 @@ public class Square : MonoBehaviour
         return tokens;
 	}
 
-    public Transform OccupyFreePosition(Token token)
+    public Transform GetFreePosition(Token token)
 	{
         if(TokenPositions[0].Token == null && TokenPositions[1].Token == null && TokenPositions[2].Token == null)
 		{

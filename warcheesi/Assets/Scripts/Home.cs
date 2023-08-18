@@ -42,7 +42,7 @@ public class Home : MonoBehaviour
         return Physics.Raycast(transform.position, Vector3.up, TokenLayer);
 	}
 
-    public Transform OccupyFreePosition()
+    public Transform GetFreePosition()
     {
         for(var k = 0; k < Positions.Count; k++)
 		{
