@@ -65,6 +65,7 @@ public class Token : MonoBehaviour
         {
             TeleportTo(targetTransform);
             var previousSquare = CurrentSquare;
+            previousSquare.ReleaseFromToken(this);
             SetSquare(null);
             previousSquare?.Reorganize();
             if (!inPlay)

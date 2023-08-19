@@ -186,7 +186,7 @@ public class GameManager : MonoBehaviour
 	{
         if (lastSelectedToken != null)
         {
-            lastSelectedToken.TeleportTo(GetTeamHome(lastSelectedToken).GetFreePosition());
+            lastSelectedToken.MoveTo(GetTeamHome(lastSelectedToken));
             Debug.Log("out!!");
         }
         else

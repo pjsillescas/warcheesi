@@ -134,6 +134,17 @@ public class Square : MonoBehaviour
         }
     }
 
+    public void ReleaseFromToken(Token token)
+    {
+        for (var k = 0; k < 3; k++)
+        {
+            if (TokenPositions[k].Token == token)
+            {
+                SetPositionToken(k, null);
+            }
+        }
+    }
+
     public void Reorganize()
 	{
         FreeSpaces();
