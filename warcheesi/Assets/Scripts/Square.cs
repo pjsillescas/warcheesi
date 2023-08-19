@@ -127,7 +127,7 @@ public class Square : MonoBehaviour
 	{
         for (var k = 0; k < 3; k++)
         {
-            if (TokenPositions[k].Token != null && !TokenPositions[k].Token.GetSquare().Equals(this))
+            if (TokenPositions[k].Token != null && TokenPositions[k].Token.GetSquare() != null && !TokenPositions[k].Token.GetSquare().Equals(this))
             {
                 SetPositionToken(k, null);
             }

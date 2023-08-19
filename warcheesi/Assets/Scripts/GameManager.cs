@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public enum TurnState { ThrowDice, Move, CountKill, Six1, Six2, Move1, Move2 }
+    public enum TurnState { Move, CountKill, Six1, Six2 }
     public static GameManager Instance = null;
 
     [SerializeField]
@@ -43,12 +43,13 @@ public class GameManager : MonoBehaviour
         
         yield return new WaitForSeconds(0.5f);
         
-        currentState = TurnState.ThrowDice;
+        currentState = TurnState.Move;
 
         Debug.Log("readying team");
         CurrentTeam = UnityEngine.Random.Range(1, 5);
-        OnTurnChange?.Invoke(this, CurrentTeam);
-        ProcessState();
+        ActivateNextTeam();
+
+        ProcessState(0);
         
         yield return null;
     }
@@ -61,11 +62,23 @@ public class GameManager : MonoBehaviour
             this.selectedToken.MoveTo(square);
 
             DeselectCurrentToken();
-            if(CheckForKill(square))
-			{
-                GoToNextState(TurnState.CountKill);
-			}
-            GoToNextState();
+            if (CheckForKill(square))
+            {
+                GoToNextState(TurnState.CountKill, SQUARES_TO_MOVE_KILL);
+            }
+            else
+            {
+                if (currentDiceValue != 6)
+                {
+                    Debug.Log("next turn");
+                    StartNewTurn();
+                }
+                else
+				{
+                    Debug.Log("next dice throw");
+                    ProcessState(0);
+				}
+            }
         }
         else
 		{
@@ -163,10 +176,11 @@ public class GameManager : MonoBehaviour
         OnTurnChange?.Invoke(this, CurrentTeam);
     }
 
-    public void GoToNextState(TurnState state)
-	{
+    public void GoToNextState(TurnState state, int numSquares)
+    {
         currentState = state;
-	}
+        ProcessState(numSquares);
+    }
 
     private void KillLastToken()
 	{
@@ -183,37 +197,14 @@ public class GameManager : MonoBehaviour
 
     public void GoToNextState()
 	{
-        switch (currentState)
-        {
-            case TurnState.Move1:
-            case TurnState.Move2:
-                break;
-            case TurnState.Move:
-                StartNewTurn();
-                break;
-            case TurnState.CountKill:
-                SetSquaresToMove(SQUARES_TO_MOVE_KILL);
-                currentState = TurnState.Move;
-                break;
-            case TurnState.Six1:
-                currentState = TurnState.Move1;
-                break;
-            case TurnState.Six2:
-                currentState = TurnState.Move2;
-                break;
-            case TurnState.ThrowDice:
-            default:
-                currentState = TurnState.Move;
-                break;
-        }
-
-        ProcessState();
-    }
+        StartNewTurn();
+	}
 
     public void StartNewTurn()
 	{
-        currentState = TurnState.ThrowDice;
+        currentState = TurnState.Move;
         ActivateNextTeam();
+        ProcessState(0);
     }
 
     public const int SQUARES_TO_MOVE_KILL = 20;
@@ -221,57 +212,36 @@ public class GameManager : MonoBehaviour
     private void SetSquaresToMove(int squaresToMove)
 	{
         currentDiceValue = squaresToMove;
-        Debug.Log($"throw dice game manager: {currentDiceValue}");
+        Debug.LogWarning($"throw dice game manager: {currentDiceValue}");
         OnDiceThrown?.Invoke(this, currentDiceValue);
 
     }
 
-    private void ProcessState()
+    private void ProcessState(int diceValue)
 	{
+        SetSquaresToMove((diceValue == 0) ? Dice.Instance.ThrowDice() : diceValue);
+        
         Debug.Log("processstate current " + currentState);
-        switch(currentState)
-		{
-            case TurnState.Move:
-            case TurnState.CountKill:
-                Debug.Log("in moving state");
-                break;
-            case TurnState.ThrowDice:
-            default:
-                SetSquaresToMove(Dice.Instance.ThrowDice());
-                Debug.Log("THROW from processstate gotonextstate " + currentState);
-                if (currentDiceValue == 6)
-                {
-                    Debug.Log("6 in state " + currentState);
-                    if (currentState == TurnState.Move || currentState == TurnState.ThrowDice)
-                    {
-                        GoToNextState(TurnState.Six1);
-                    }
-                    else if (currentState == TurnState.Move1)
-                    {
-                        GoToNextState(TurnState.Six2);
-                    }
-                    else if(currentState == TurnState.Move2)
-                    {
-                        KillLastToken();
-                        Debug.Log("SIX3 from processstate gotonextstate");
-                        //GoToNextState();
-                        StartNewTurn();
-                        ProcessState();
-                    }
-                    else
-                    {
-                        GoToNextState();
-                    }
-                    
-                    Debug.Log("in new state " + currentState);
-                }
-                else
-                {
-                    Debug.Log("not a 6 " + currentDiceValue + " in state " + currentState);
-                    GoToNextState();
-                }
-                break;
-		}
+        if (currentDiceValue == 6)
+        {
+            Debug.Log("6 in state " + currentState);
+            if (currentState == TurnState.Move)
+            {
+                GoToNextState(TurnState.Six1, 0);
+            }
+            else if (currentState == TurnState.Six1)
+            {
+                GoToNextState(TurnState.Six2,0);
+            }
+            else if (currentState == TurnState.Six2)
+            {
+                KillLastToken();
+                Debug.Log("SIX3 from processstate gotonextstate");
+                StartNewTurn();
+            }
+
+            Debug.Log("in new state " + currentState);
+        }
 	}
 
     // Update is called once per frame
