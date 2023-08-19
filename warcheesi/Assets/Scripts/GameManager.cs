@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public enum TurnState { ThrowDice, Move, CountKill, Six1, Six2, Six3, Move1, Move2 }
+    public enum TurnState { ThrowDice, Move, CountKill, Six1, Six2, Move1, Move2 }
     public static GameManager Instance = null;
 
     [SerializeField]
@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     public event EventHandler<int> OnDiceThrown;
 
     private Token selectedToken;
+    private Token lastSelectedToken;
     private TurnState currentState;
     private int currentDiceValue;
     List<Square> reachableSquares;
@@ -32,20 +33,23 @@ public class GameManager : MonoBehaviour
         
         Instance = this;
 
-        selectedToken = null;
-        currentState = TurnState.ThrowDice;
-
         StartCoroutine(InitializeTeamCoroutine());
     }
 
     private IEnumerator InitializeTeamCoroutine()
 	{
+        selectedToken = null;
+        lastSelectedToken = null;
+        
         yield return new WaitForSeconds(0.5f);
+        
+        currentState = TurnState.ThrowDice;
 
         Debug.Log("readying team");
         CurrentTeam = UnityEngine.Random.Range(1, 5);
         OnTurnChange?.Invoke(this, CurrentTeam);
         ProcessState();
+        
         yield return null;
     }
 
@@ -92,6 +96,7 @@ public class GameManager : MonoBehaviour
 	{
         if (selectedToken != null)
         {
+            lastSelectedToken = selectedToken;
             reachableSquares?.ForEach(square => square.UpdateMaterial());
             selectedToken.Deselect();
         }
@@ -107,13 +112,10 @@ public class GameManager : MonoBehaviour
 
             selectedToken.Select();
 
-            if(currentState == TurnState.Move || currentState == TurnState.Move1 || currentState == TurnState.Move2)
-			{
-                reachableSquares = GetSquareDestinations(token, currentDiceValue);
-                Debug.Log("squares: " + reachableSquares.Count);
-                reachableSquares.ForEach(square => Debug.Log(square.name));
-                reachableSquares.ForEach(square => square.SetReachable());
-			}
+            reachableSquares = GetSquareDestinations(token, currentDiceValue);
+            Debug.Log("squares: " + reachableSquares.Count);
+            reachableSquares.ForEach(square => Debug.Log(square.name));
+            reachableSquares.ForEach(square => square.SetReachable());
         }
 	}
 
@@ -164,12 +166,19 @@ public class GameManager : MonoBehaviour
     public void GoToNextState(TurnState state)
 	{
         currentState = state;
-        //GoToNextState();
 	}
 
     private void KillLastToken()
 	{
-        Debug.Log("out!!");
+        if (lastSelectedToken != null)
+        {
+            lastSelectedToken.TeleportTo(GetTeamHome(lastSelectedToken).GetFreePosition());
+            Debug.Log("out!!");
+        }
+        else
+		{
+            Debug.LogError("There was no last moved token. This should not happen.");
+		}
     }
 
     public void GoToNextState()
@@ -191,10 +200,6 @@ public class GameManager : MonoBehaviour
                 break;
             case TurnState.Six2:
                 currentState = TurnState.Move2;
-                break;
-            case TurnState.Six3:
-                KillLastToken();
-                StartNewTurn();
                 break;
             case TurnState.ThrowDice:
             default:
@@ -226,11 +231,6 @@ public class GameManager : MonoBehaviour
         Debug.Log("processstate current " + currentState);
         switch(currentState)
 		{
-            case TurnState.Six3:
-                selectedToken.TeleportTo(GetTeamHome(selectedToken).GetFreePosition());
-                Debug.Log("SIX3 from processstate gotonextstate");
-                GoToNextState();
-                break;
             case TurnState.Move:
             case TurnState.CountKill:
                 Debug.Log("in moving state");
@@ -242,7 +242,7 @@ public class GameManager : MonoBehaviour
                 if (currentDiceValue == 6)
                 {
                     Debug.Log("6 in state " + currentState);
-                    if (currentState == TurnState.Move)
+                    if (currentState == TurnState.Move || currentState == TurnState.ThrowDice)
                     {
                         GoToNextState(TurnState.Six1);
                     }
@@ -252,7 +252,11 @@ public class GameManager : MonoBehaviour
                     }
                     else if(currentState == TurnState.Move2)
                     {
-                        GoToNextState(TurnState.Six3);
+                        KillLastToken();
+                        Debug.Log("SIX3 from processstate gotonextstate");
+                        //GoToNextState();
+                        StartNewTurn();
+                        ProcessState();
                     }
                     else
                     {
