@@ -14,7 +14,6 @@ public class Token : MonoBehaviour
 
     private MeshRenderer mesh;
     private Color color;
-    private bool inPlay;
     private Square CurrentSquare;
 
     // Start is called before the first frame update
@@ -22,11 +21,10 @@ public class Token : MonoBehaviour
     {
         mesh = GetComponentInChildren<MeshRenderer>();
         Deselect();
-        inPlay = false;
         CurrentSquare = null;
     }
 
-    public bool IsInPlay() => inPlay;
+    public bool IsInPlay() => CurrentSquare != null;
     public int GetTeam() => Team;
 
     public Square GetSquare() => CurrentSquare;
@@ -47,10 +45,6 @@ public class Token : MonoBehaviour
             var previousSquare = CurrentSquare;
             SetSquare(square);
             previousSquare?.Reorganize();
-            if (!inPlay)
-			{
-                inPlay = true;
-			}
             success = true;
         }
 
@@ -68,10 +62,6 @@ public class Token : MonoBehaviour
             previousSquare.ReleaseFromToken(this);
             SetSquare(null);
             previousSquare?.Reorganize();
-            if (!inPlay)
-            {
-                inPlay = true;
-            }
             success = true;
         }
 

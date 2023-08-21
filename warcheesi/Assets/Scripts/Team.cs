@@ -19,7 +19,7 @@ public class Team : MonoBehaviour
 
         home.Initialize(TeamNumber,Color);
 
-        squares.ForEach(square => square.UpdateMaterial(Color));
+        squares.ForEach(square => square.UpdateMaterial(Color, TeamNumber));
     }
 
     public Home GetHome() => home;

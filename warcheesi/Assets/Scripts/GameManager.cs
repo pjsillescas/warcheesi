@@ -132,18 +132,22 @@ public class GameManager : MonoBehaviour
         }
 	}
 
-    private void GetSquareDestinations(Square startSquare, int numSquares, ref List<Square> destinations)
+    private void GetSquareDestinations(Square startSquare, int numSquares, int team, ref List<Square> destinations)
 	{
         if (numSquares > 0)
 		{
             foreach(var square in startSquare.GetNextSquares())
 			{
-                GetSquareDestinations(square, numSquares - 1, ref destinations);
+                GetSquareDestinations(square, numSquares - 1, team, ref destinations);
 			}
 		}
         else
 		{
-            destinations.Add(startSquare);
+            var thisTeam = startSquare.GetTeam();
+            if (thisTeam == team || thisTeam == 0)
+            {
+                destinations.Add(startSquare);
+            }
 		}
 	}
 
@@ -154,7 +158,7 @@ public class GameManager : MonoBehaviour
         if(token.IsInPlay())
 		{
             var startSquare = token.GetSquare();
-            GetSquareDestinations(startSquare, diceValue, ref destinations);
+            GetSquareDestinations(startSquare, diceValue, token.GetTeam(), ref destinations);
 		}
         else
 		{

@@ -31,6 +31,7 @@ public class Square : MonoBehaviour
     [SerializeField]
     private List<Square> NextSquares;
 
+    private int team;
     private Color color;
     private bool useColor;
     private bool isReachable;
@@ -41,6 +42,7 @@ public class Square : MonoBehaviour
         isReachable = true;
 	}
 
+    public int GetTeam() => team;
     public bool IsReachable() => isReachable;
 
     public List<Square> GetNextSquares() => NextSquares;
@@ -57,9 +59,10 @@ public class Square : MonoBehaviour
         isReachable = false;
     }
 
-    public void UpdateMaterial(Color color)
+    public void UpdateMaterial(Color color, int team)
 	{
         useColor = true;
+        this.team = team;
         this.color = color;
         UpdateMaterial();
 	}
@@ -167,6 +170,7 @@ public class Square : MonoBehaviour
 
     private void Awake()
 	{
+        team = 0;
         useColor = false;
         isReachable = false;
 
